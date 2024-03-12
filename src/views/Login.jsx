@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { request } from "../config/axios-config";
+import { useSelector, useDispatch } from "react-redux";
+import { setNewToken, removeToken } from "../redux/tokenSlice";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -7,6 +9,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 const LoginView = () => {
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.token.value);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -22,9 +27,10 @@ const LoginView = () => {
 
     try {
       const response = await request.post("/login", { email, password });
-      const data = response.data;
+      const newToken = response.data.token;
+      dispatch(setNewToken({ newToken: newToken }));
 
-      console.log("Login successful", data);
+      console.log("Login successful", response.data);
     } catch (error) {
       console.error("Error logging in:", error);
     }
@@ -43,6 +49,12 @@ const LoginView = () => {
           <div className="flex-column justify-center content-center">
             <h2 className="text-2xl font-semibold text-center mb-4">
               Sign in to F-Booking
+              <div className="">
+                <p className="text-xs break-words">Token: {token}</p>
+                <button onClick={()=> dispatch(removeToken())} className="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600">
+                  <p className="text-xs">LOGOUT</p>
+                </button>
+              </div>
             </h2>
             <form onSubmit={submitFormLogin} className="space-y-4">
               <div>
