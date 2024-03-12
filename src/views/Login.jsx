@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { request } from "../config/axios-config";
 import { useSelector, useDispatch } from "react-redux";
 import { setNewToken, removeToken } from "../redux/tokenSlice";
@@ -9,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 const LoginView = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token.value);
 
@@ -27,8 +29,11 @@ const LoginView = () => {
 
     try {
       const response = await request.post("/login", { email, password });
-      const newToken = response.data.token;
-      dispatch(setNewToken({ newToken: newToken }));
+      if (response.status === 200 && response.data) {
+        const newToken = response.data.token;
+        dispatch(setNewToken({ newToken: newToken }));
+        navigate("/calendar");
+      }
 
       console.log("Login successful", response.data);
     } catch (error) {
@@ -51,7 +56,10 @@ const LoginView = () => {
               Sign in to F-Booking
               <div className="">
                 <p className="text-xs break-words">Token: {token}</p>
-                <button onClick={()=> dispatch(removeToken())} className="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600">
+                <button
+                  onClick={() => dispatch(removeToken())}
+                  className="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600"
+                >
                   <p className="text-xs">LOGOUT</p>
                 </button>
               </div>
