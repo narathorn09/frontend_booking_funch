@@ -3,14 +3,17 @@ import { createSlice } from '@reduxjs/toolkit'
 export const tokenSlice  = createSlice({
   name: 'token',
   initialState: {
-    value: null
+    value: null,
+    decode: null
   },
   reducers: {
     setNewToken: (state, action) => {
-      state.value = action.payload.newToken
+      state.value = action.payload.newToken;
+      state.decode = action.payload.dataDecode;
     },
     removeToken: (state) => {
-      state.value = null
+      state.value = null;
+      state.decode = null;
     }
 
   }
