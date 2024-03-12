@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { request } from "../config/axios-config";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -10,6 +11,23 @@ const LoginView = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const submitFormLogin = async (event) => {
+    event.preventDefault();
+
+    // Get form data
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+
+    try {
+      const response = await request.post("/login", { email, password });
+      const data = response.data;
+
+      console.log("Login successful", data);
+    } catch (error) {
+      console.error("Error logging in:", error);
+    }
   };
 
   return (
@@ -26,7 +44,7 @@ const LoginView = () => {
             <h2 className="text-2xl font-semibold text-center mb-4">
               Sign in to F-Booking
             </h2>
-            <form className="space-y-4">
+            <form onSubmit={submitFormLogin} className="space-y-4">
               <div>
                 <label
                   htmlFor="email"
