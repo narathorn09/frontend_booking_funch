@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginView from "./views/Login.jsx";
 import RegisterView from "./views/Register.jsx";
 import CalendarView from "./views/Calendar.jsx";
-// import "./App.css";
+import "./css/animation.css";
 
 const App = () => {
   return (
