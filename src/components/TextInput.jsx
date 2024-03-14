@@ -12,7 +12,8 @@ const TextInput = ({
   placeholder,
   onShowPassword,
   isShowPassword,
-  required 
+  required,
+  maxLength
 }) => {
   const isPasswordInput = type === "password";
   const isEmailInput = type === "email";
@@ -25,7 +26,7 @@ const TextInput = ({
   return (
     <div className="mb-4">
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}{required && <span className="text-red-500 ml-1">*</span>}
+      {required && <span className="text-red-500 mr-1">*</span>}{label}
       </label>
       <div className="relative">
         <input
@@ -35,6 +36,7 @@ const TextInput = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          maxLength={maxLength}
           className={`mt-1 p-2 w-full border border-gray-300 rounded-md outline-indigo-300 ${
             (error || (isEmailInput && value && !isValidEmail(value))) ? "border-red-500 focus:outline-red-400" : ""
           }`}
@@ -77,7 +79,8 @@ TextInput.propTypes = {
   placeholder: PropTypes.string,
   onShowPassword: PropTypes.func,
   isShowPassword: PropTypes.bool,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  maxLength: PropTypes.number
 };
 
 export default TextInput;

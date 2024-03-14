@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { request } from "../config/axios-config";
 import TextInput from "../components/TextInput";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const RegisterView = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ const RegisterView = () => {
     confirmPassword: "",
   });
 
+  const recaptchaRef = React.createRef();
+  const [capValue, setCapValue] = useState(null);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowPasswordConfirm, setIsshowPasswordConfirm] = useState(false);
 
@@ -41,12 +44,26 @@ const RegisterView = () => {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
         confirmPassword:
-          value === "" ? `${name} is required ` : value !== formData.password ? "Passwords don't match" : "",
+          value === ""
+            ? `${name} is required `
+            : value !== formData.password
+            ? "Passwords don't match"
+            : "",
       }));
     } else {
       setFormErrors((prevErrors) => ({
         ...prevErrors,
         [name]: value ? "" : `${name} is required`,
+      }));
+    }
+    if (name === "password" && formData.password !== "") {
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_@&*]{6,}$/;
+      const isValidPassword = passwordRegex.test(value);
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        password: isValidPassword
+          ? ""
+          : "Password must be at least 6 characters long and contain at least one letter, one number, and only '_', '@', '&', or '*' as special characters.",
       }));
     }
   };
@@ -71,9 +88,12 @@ const RegisterView = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await request.post("/register", formData);
-      console.log(response.data); // Log response data
-      formReset();
+      const token = await recaptchaRef.current.executeAsync();
+      if (token) {
+        const response = await request.post("/register", formData);
+        console.log(response.data); // Log response data
+        formReset();
+      }
     } catch (error) {
       console.error("Registration failed:", error);
       // Handle registration error
@@ -95,6 +115,8 @@ const RegisterView = () => {
           error={formErrors.firstName}
           onChange={handleChange}
           placeholder="Enter your first name"
+          required={true}
+          maxLength={50}
         />
         <TextInput
           type="text"
@@ -104,6 +126,8 @@ const RegisterView = () => {
           error={formErrors.lastName}
           onChange={handleChange}
           placeholder="Enter your last name"
+          required={true}
+          maxLength={50}
         />
         <TextInput
           type="email"
@@ -113,6 +137,8 @@ const RegisterView = () => {
           value={formData.email}
           error={formErrors.email}
           onChange={handleChange}
+          required={true}
+          maxLength={200}
         />
         <TextInput
           type="password"
@@ -124,6 +150,8 @@ const RegisterView = () => {
           onChange={handleChange}
           onShowPassword={togglePasswordVisibility}
           isShowPassword={isShowPassword}
+          required={true}
+          maxLength={100}
         />
         <TextInput
           type="password"
@@ -135,10 +163,19 @@ const RegisterView = () => {
           onChange={handleChange}
           onShowPassword={togglePasswordConfirmVisibility}
           isShowPassword={isShowPasswordConfirm}
+          required={true}
+          maxLength={100}
+        />
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey="6LfzF5cpAAAAAGkbZubvP1X57SVK04KZ5aaS23mO"
+          size="invisible"
+          onChange={(value) => setCapValue(value)}
         />
 
         <div className="flex items-center justify-between">
           <button
+            // disabled={true}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >

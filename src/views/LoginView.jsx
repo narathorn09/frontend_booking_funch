@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setNewToken } from "../redux/tokenSlice";
 import { HomeModernIcon } from "@heroicons/react/24/outline";
 import TextInput from "../components/TextInput";
+import "../css/animation.css";
 
 const LoginView = () => {
   const navigate = useNavigate();
@@ -111,6 +112,7 @@ const LoginView = () => {
                 error={formErrors.email}
                 onChange={handleChange}
                 required={true}
+                maxLength={200}
               />
               <TextInput
                 type="password"
@@ -123,6 +125,7 @@ const LoginView = () => {
                 onShowPassword={togglePasswordVisibility}
                 isShowPassword={showPassword}
                 required={true}
+                maxLength={100}
               />
               <div className="flex-col items-center justify-center">
                 <div className="flex items-center justify-end mb-3">
