@@ -3,6 +3,7 @@ import LoginView from "./views/LoginView.jsx";
 import RegisterView from "./views/RegisterView.jsx";
 import CalendarView from "./views/CalendarView.jsx";
 import VerifyEmailView from "./views/VerifyEmailView.jsx";
+import "./css/animation.css";
 import "./App.css"
 
 const App = () => {

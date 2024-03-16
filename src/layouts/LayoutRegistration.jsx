@@ -1,5 +1,4 @@
 import { HomeModernIcon } from "@heroicons/react/24/outline";
-import "../css/animation.css";
 
 const LayoutRegistration = ({ children }) => {
   return (

@@ -1,26 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { request } from "../config/axios-config";
 import { useDispatch } from "react-redux";
 import { setNewToken } from "../redux/tokenSlice";
-import TextInput from "../components/TextInput";
-import LayoutRegistration from "../components/LayoutRegistration";
-import "../css/animation.css";
+import { request } from "../config/axios-config";
 import Logo from "../components/Logo";
-
+import TextInput from "../components/TextInput";
+import LayoutRegistration from "../layouts/LayoutRegistration";
 
 const LoginView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoninError, setIsLoninError] = useState(false);
-
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [formErrors, setFormErrors] = useState({ email: "", password: "" });
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isLoninError, setIsLoninError] = useState(false);
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setIsShowPassword(!isShowPassword);
   };
 
   const handleChange = (e) => {
@@ -51,7 +48,7 @@ const LoginView = () => {
         dispatch(setNewToken({ newToken: newToken }));
         navigate("/calendar");
       }
-      console.log("Login successful", response.data);
+
     } catch (error) {
       setIsLoninError(true);
       console.error("Error logging in:", error);
@@ -74,7 +71,7 @@ const LoginView = () => {
       >
         Email or password incorrect! Please check again.
       </div>
-      <form onSubmit={submitFormLogin} >
+      <form onSubmit={submitFormLogin}>
         <TextInput
           type="email"
           name="email"
@@ -95,7 +92,7 @@ const LoginView = () => {
           error={formErrors.password}
           onChange={handleChange}
           onShowPassword={togglePasswordVisibility}
-          isShowPassword={showPassword}
+          isShowPassword={isShowPassword}
           required={true}
           maxLength={100}
         />

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { request } from "../config/axios-config";
-import TextInput from "../components/TextInput";
-import ReCAPTCHA from "react-google-recaptcha";
-import LayoutRegistration from "../components/LayoutRegistration";
 import { useDispatch } from "react-redux";
 import { setRegister } from "../redux/registerSlice";
+import { request } from "../config/axios-config";
+import ReCAPTCHA from "react-google-recaptcha";
+import validatePassword from "../utils/validatePassword";
+import TextInput from "../components/TextInput";
+import LayoutRegistration from "../layouts/LayoutRegistration";
 
 const RegisterView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const recaptchaRef = React.createRef();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -27,11 +29,10 @@ const RegisterView = () => {
     confirmPassword: "",
   });
 
-  const recaptchaRef = React.createRef();
-  const [capValue, setCapValue] = useState(null);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowPasswordConfirm, setIsshowPasswordConfirm] = useState(false);
   const [isRegisterError, setIsRegisterError] = useState(false);
+  const [capValue, setCapValue] = useState(null);
   const [textRegisterError, setTextRegisterError] = useState("");
 
   const togglePasswordVisibility = () => {
@@ -50,7 +51,10 @@ const RegisterView = () => {
     }));
 
     if (name === "password" && value !== "") {
-      validatePassword(value);
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        password: validatePassword(value),
+      }));
     } else if (name === "confirmPassword") {
       const confirmPasswordError =
         value === ""
@@ -70,36 +74,6 @@ const RegisterView = () => {
           : `${name.charAt(0).toUpperCase() + name.slice(1)} is required.`,
       }));
     }
-  };
-
-  const validatePassword = (password) => {
-    const passwordLengthRegex = /^.{6,}$/;
-    const passwordContainsLetterRegex = /[A-Za-z]/;
-    const passwordContainsNumberRegex = /\d/;
-    const passwordContainsSpecialCharsRegex = /[@&_*$]/; // Allow only '_', '@', '&', or '*' as special characters
-
-    const isValidLength = passwordLengthRegex.test(password);
-    const containsLetter = passwordContainsLetterRegex.test(password);
-    const containsNumber = passwordContainsNumberRegex.test(password);
-    const containsSpecialChars =
-      passwordContainsSpecialCharsRegex.test(password);
-
-    let passwordError = "";
-    if (!isValidLength) {
-      passwordError = "Password must be at least 6 characters long.";
-    } else if (!containsLetter) {
-      passwordError = "Password must contain at least one letter.";
-    } else if (!containsNumber) {
-      passwordError = "Password must contain at least one number.";
-    } else if (!containsSpecialChars) {
-      passwordError =
-        "Password must only contain '_', '@', '&', or '*' as special characters.";
-    }
-
-    setFormErrors((prevErrors) => ({
-      ...prevErrors,
-      password: passwordError,
-    }));
   };
 
   const formReset = () => {

@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { request } from "../config/axios-config";
-import LayoutRegistration from "../components/LayoutRegistration";
-import Logo from "../components/Logo";
-import { useSelector, useDispatch } from "react-redux";
-import { EnvelopeIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { useDispatch, useSelector } from "react-redux";
 import { removeRegister } from "../redux/registerSlice";
+import { request } from "../config/axios-config";
+import { EnvelopeIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import Logo from "../components/Logo";
+import LayoutRegistration from "../layouts/LayoutRegistration";
 
 const VerifyEmailView = () => {
-  const dispatch = useDispatch();
-  const email = useSelector((state) => state.register.email);
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [emailHiddenText, setEmailHiddenText] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
   const [countdownText, setCountdownText] = useState("");
-
+  const [isVerified, setIsVerified] = useState(false);
+  
+  const email = useSelector((state) => state.register.email);
   const emailToken = searchParams.get("emailToken");
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const VerifyEmailView = () => {
           if (verify) {
             setIsVerified(true);
             setEmailHiddenText(email);
-            dispatch(removeRegister())
+            dispatch(removeRegister());
             let count = 15;
             const countdownInterval = setInterval(() => {
               count--;
