@@ -59,7 +59,7 @@ const TextInput = ({
         )}
       </div>
       <p
-        className={`text-red-500 text-xs italic h-1 ${
+        className={`text-red-500 text-xs font-medium h-1 ${
           (error || (isEmailInput && value && !isValidEmail(value))) ? "visible" : "invisible"
         } `}
       >

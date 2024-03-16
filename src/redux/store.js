@@ -11,6 +11,8 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import tokenReducer from "./tokenSlice";
+import registerReducer from "./registerSlice";
+
 import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
 
 const persistConfig = {
@@ -21,6 +23,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   token: tokenReducer,
+  register: registerReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
