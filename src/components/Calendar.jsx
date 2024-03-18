@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
-const Calendar = () => {
+const Calendar = ({ onClickDate, disabledDates, isBlur }) => {
   const [currYear, setCurrYear] = useState(new Date().getFullYear());
   const [currMonth, setCurrMonth] = useState(new Date().getMonth());
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -20,6 +21,25 @@ const Calendar = () => {
     "December",
   ];
 
+  const isDateDisabled = (day) => {
+    const dateToCheck = new Date(currYear, currMonth, day);
+    for (const { startDate, endDate } of disabledDates) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (start !== end) {
+        start.setDate(start.getDate() - 1);
+      } else {
+        end.setDate(end.getDate() + 1);
+      }
+
+      if (dateToCheck >= start && dateToCheck <= end) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const renderCalendar = () => {
     let firstDayofMonth = new Date(currYear, currMonth, 1).getDay();
     let lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate();
@@ -36,10 +56,10 @@ const Calendar = () => {
       daysArray.push(
         <div
           key={`prev${i}`}
-          className="w-100 h-16 flex items-center justify-center"
+          className="w-100 h-12 flex items-center justify-center"
         >
           <div
-            className={`text-center text-gray-400 w-16 h-16 flex items-center justify-center`}
+            className={`text-center text-gray-400 w-16 h-12 flex items-center justify-center`}
           >
             {lastDateofLastMonth - i + 1}
           </div>
@@ -53,16 +73,24 @@ const Calendar = () => {
         i === new Date().getDate() &&
         currMonth === new Date().getMonth() &&
         currYear === new Date().getFullYear();
+      let isDisabled = isDateDisabled(i);
       daysArray.push(
         <div
           key={`curr${i}`}
-          className={`h-16 w-100 flex items-center justify-center `}
+          className={`h-12 w-100 flex items-center justify-center `}
         >
           <button
-            className={`text-center w-16 h-16 flex items-center justify-center rounded-full hover:bg-purple-600 hover:text-white ${
-              isToday ? "bg-purple-600 text-white" : ""
-            } `}
-            onClick={() => handleDateClick(i)}
+            className={`text-center w-12 h-12 flex items-center justify-center rounded-full ${
+              isToday ? "border border-purple-600 text-indigo" : ""
+            } ${
+              isDisabled
+                ? "text-gray-400 cursor-not-allowed bg-red-500 text-white"
+                : isBlur
+                ? ""
+                : " hover:bg-purple-500 hover:text-white "
+            }`}
+            onClick={() => onClickDate(i, currMonth, currYear)}
+            disabled={isDisabled}
           >
             {i}
           </button>
@@ -71,14 +99,14 @@ const Calendar = () => {
     }
 
     // Push inactive days from next month
-    for (let i = lastDayofMonth; i < 6; i++) {
+    for (let i = lastDayofMonth; daysArray.length < 42; i++) {
       daysArray.push(
         <div
           key={`next${i}`}
-          className="w-100 h-16 flex items-center justify-center"
+          className="w-100 h-12 flex items-center justify-center"
         >
           <div
-            className={`text-center text-gray-400 w-16 h-16 flex items-center justify-center`}
+            className={`text-center text-gray-400 w-16 h-12 flex items-center justify-center`}
           >
             {i - lastDayofMonth + 1}
           </div>
@@ -102,16 +130,14 @@ const Calendar = () => {
     setCurrYear(newYear);
   };
 
-  const handleDateClick = (day) => {
-
-    console.log(`Selected date: ${day}/${currMonth + 1}/${currYear}`);
-
-  };
-
   return (
-    <div className="wrapper bg-white rounded-lg shadow-md p-6">
-      <header className="flex justify-between items-center mb-6">
-        <p className="text-lg font-semibold">{`${months[currMonth]} ${currYear}`}</p>
+    <div
+      className={`wrapper bg-white rounded-lg shadow-md p-6 ${
+        isBlur ? "blur-sm" : ""
+      }`}
+    >
+      <header className="flex justify-between items-center mb-6 md:px-10">
+        <p className="text-lg font-semibold text-indigo-500">{`${months[currMonth]} ${currYear}`}</p>
         <div className="icons flex space-x-2">
           <span
             id="prev"
@@ -139,6 +165,12 @@ const Calendar = () => {
       </div>
     </div>
   );
+};
+
+Calendar.propTypes = {
+  onClickDate: PropTypes.func.isRequired,
+  disabledDates: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isBlur: PropTypes.bool,
 };
 
 export default Calendar;

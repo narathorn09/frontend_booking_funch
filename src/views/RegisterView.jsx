@@ -43,6 +43,11 @@ const RegisterView = () => {
     setIsshowPasswordConfirm(!isShowPasswordConfirm);
   };
 
+  const isValidEmail = () => {
+    // Regular expression
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData?.email);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -117,7 +122,7 @@ const RegisterView = () => {
         ...prevErrors,
         ...newFormErrors,
       }));
-    } else if (errorFields.length === 0) {
+    } else if (errorFields.length === 0 && isValidEmail()) {
       // Check if there are no error fields
       try {
         const token = await recaptchaRef.current.executeAsync();
@@ -134,7 +139,6 @@ const RegisterView = () => {
         setIsRegisterError(true);
         setTextRegisterError(error?.response?.data?.message);
         console.error("Registration failed:", error);
-        // Handle registration error
       }
     }
   };

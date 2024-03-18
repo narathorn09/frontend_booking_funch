@@ -13,7 +13,8 @@ const TextInput = ({
   onShowPassword,
   isShowPassword,
   required,
-  maxLength
+  maxLength,
+  isDisable
 }) => {
   const isPasswordInput = type === "password";
   const isEmailInput = type === "email";
@@ -37,6 +38,7 @@ const TextInput = ({
           onChange={onChange}
           placeholder={placeholder}
           maxLength={maxLength}
+          disabled={isDisable}
           className={`mt-1 p-2 w-full border border-gray-300 rounded-md outline-indigo-300 ${
             (error || (isEmailInput && value && !isValidEmail(value))) ? "border-red-500 focus:outline-red-400" : ""
           }`}
@@ -80,7 +82,8 @@ TextInput.propTypes = {
   onShowPassword: PropTypes.func,
   isShowPassword: PropTypes.bool,
   required: PropTypes.bool,
-  maxLength: PropTypes.number
+  maxLength: PropTypes.number,
+  isDisable: PropTypes.bool
 };
 
 export default TextInput;
