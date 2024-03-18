@@ -1,1 +1,25 @@
+/* Import Poppins font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap');
 
+/* Apply the font-family to the root element */
+#root {
+    margin: 0 auto;
+    font-family: 'Barlow', sans-serif;
+}
+
+/* Define scrollbar styles */
+::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar handle */
+    border-radius: 5px; /* Rounded corners */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar handle on hover */
+  }
+  
