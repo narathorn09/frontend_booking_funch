@@ -5,7 +5,6 @@ import TextInput from "../components/TextInput.jsx";
 import Datepicker from "react-tailwindcss-datepicker";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 
-
 const BookingModal = ({
   isOpen,
   onClose,
@@ -19,6 +18,14 @@ const BookingModal = ({
   handleDateBetweenChange,
   handleFormSubmit,
 }) => {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() - 1);
+
+  const listDateDisabled = [
+    ...disabledDates,
+    { startDate: "2011-01-01", endDate: currentDate },
+  ];
+
   return (
     <Modal
       title="BOOKING"
@@ -63,7 +70,7 @@ const BookingModal = ({
                 : new Date()
             }
             useRange={false}
-            disabledDates={disabledDates}
+            disabledDates={listDateDisabled}
             value={dateBetween}
             onChange={handleDateBetweenChange}
             displayFormat={"DD/MM/YYYY"}

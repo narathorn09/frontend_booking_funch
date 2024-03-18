@@ -40,6 +40,15 @@ const Calendar = ({ onClickDate, disabledDates, isBlur }) => {
     return false;
   };
 
+  const isOldDay = (day) => {
+    const currentDate = new Date();
+    const dateToCheck = new Date(currYear, currMonth, day+1);
+    if (dateToCheck < currentDate) {
+      return true;
+    }
+    return false;
+  };
+
   const renderCalendar = () => {
     let firstDayofMonth = new Date(currYear, currMonth, 1).getDay();
     let lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate();
@@ -59,7 +68,7 @@ const Calendar = ({ onClickDate, disabledDates, isBlur }) => {
           className="w-100 h-12 flex items-center justify-center"
         >
           <div
-            className={`text-center text-gray-400 w-16 h-12 flex items-center justify-center`}
+            className={`text-center text-gray-400 w-12 h-12 flex items-center justify-center`}
           >
             {lastDateofLastMonth - i + 1}
           </div>
@@ -74,6 +83,7 @@ const Calendar = ({ onClickDate, disabledDates, isBlur }) => {
         currMonth === new Date().getMonth() &&
         currYear === new Date().getFullYear();
       let isDisabled = isDateDisabled(i);
+      let isDisabledOldDay = isOldDay(i);
       daysArray.push(
         <div
           key={`curr${i}`}
@@ -88,8 +98,16 @@ const Calendar = ({ onClickDate, disabledDates, isBlur }) => {
                 : isBlur
                 ? ""
                 : " hover:bg-purple-500 hover:text-white "
+            } ${
+              isDisabledOldDay
+                ? "text-gray-400 w-12 h-12 cursor-not-allowed hover:bg-white hover:text-gray-400"
+                : ""
             }`}
-            onClick={() => onClickDate(i, currMonth, currYear)}
+            onClick={
+              isDisabledOldDay
+                ? () => {}
+                : () => onClickDate(i, currMonth, currYear)
+            }
             disabled={isDisabled}
           >
             {i}
@@ -106,7 +124,7 @@ const Calendar = ({ onClickDate, disabledDates, isBlur }) => {
           className="w-100 h-12 flex items-center justify-center"
         >
           <div
-            className={`text-center text-gray-400 w-16 h-12 flex items-center justify-center`}
+            className={`text-center text-gray-400 w-12 h-12 flex items-center justify-center`}
           >
             {i - lastDayofMonth + 1}
           </div>
